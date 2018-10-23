@@ -1,6 +1,6 @@
 """Checks specific subreddit
 This modules allows checking specific subreddits and their content
-It will connect to the reddit API and provide our tool with 
+It will connect to the reddit API and provide our tool with
 all needed information, such as:
 
     - Image id
@@ -14,6 +14,7 @@ import requests
 
 from DBHandler import DBHandler
 from RedditDownloader import RedditDownloader
+
 
 # TODO Maybe add PRAW to this
 class RedditChecker(RedditDownloader):

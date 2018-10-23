@@ -14,21 +14,21 @@ class DBHandler():
             'sqlite3': sqlite3.connect('db.sqlite3'),
         }
 
-    @abstractproperty
-    def connect(self, db_type):
+    @property
+    def connection(self, db_type):
         """Create a connection to a given database type
         The database type given is not case sensitive
 
-        :param db_type: 
+        :param db_type:
             database type:
             E.g.: ('sqlite3')
         :type db_type: str
         :return: Database connection object
-        :raises sqlite3.Error: 
+        :raises sqlite3.Error:
             Raises exception if it cant connect to the SQLite3 database
         """
 
         try:
             return self.db_types[db_type.lower()]
         except sqlite3.Error as error:
-            raise(f"An SQLite3 Error occured: {error}")
+            raise f"An SQLite3 Error occured: {error}"
