@@ -1,6 +1,6 @@
 # Contributing
 
-When contributing to this repository, please first discuss the change you wish to make via an issue and discuss it. \
+When contributing to this repository, please first describe the change you wish to make via an issue and discuss it. \
 If there is an interesting issue you would like to work on, discuss it first and assign it to yourself, if possible.
 
 ## Pull Request Process
