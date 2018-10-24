@@ -31,4 +31,4 @@ class DBHandler():
         try:
             return self.db_types[db_type.lower()]
         except sqlite3.Error as error:
-            raise f"An SQLite3 Error occured: {error}"
+            raise f"An SQLite3 Error occurred: {error}"
