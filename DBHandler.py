@@ -8,13 +8,18 @@ import sqlite3
 
 
 class DBHandler():
+    """Create a connection to any given database format via '.connect'
+    Usage:
 
+        db_handler = DBHandler()
+        db_handler_connection = db_handler.connect('sqlite3')
+    """
     def __init__(self):
+        # TODO add others / not important
         self.db_types = {
             'sqlite3': sqlite3.connect('db.sqlite3'),
         }
 
-    @property
     def connection(self, db_type):
         """Create a connection to a given database type
         The database type given is not case sensitive
@@ -32,3 +37,4 @@ class DBHandler():
             return self.db_types[db_type.lower()]
         except sqlite3.Error as error:
             raise f"An SQLite3 Error occurred: {error}"
+        # TODO add other exceptions

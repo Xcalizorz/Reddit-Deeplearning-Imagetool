@@ -10,11 +10,8 @@ all needed information, such as:
     - Amount of comments
     - If removed -> the reason for removal
 """
-import requests
-import urllib3
-import warnings
-
 from datetime import datetime
+import requests
 
 from DBHandler import DBHandler
 from RedditDownloader import RedditDownloader
@@ -22,7 +19,13 @@ from RedditDownloader import RedditDownloader
 
 # TODO Maybe add PRAW to this
 class RedditChecker(RedditDownloader):
+    """
+    RedditChecker allows to check subreddits and filter the json dump if them
 
+    :param RedditDownloader:
+        It inherits from the RedditDownloader, which can download
+        files from the subreddits specified
+    """
     def __init__(self, subreddits, reddit_sort='new', reddit_time='day'):
         """Init for the RedditChecker class
         Allows to add subreddits as a list or str
