@@ -23,3 +23,4 @@ Please adhere to them, because your merge request will not be accepted, if you p
 - Try to write clean code from the beginning
   - [SOLID](https://en.wikipedia.org/wiki/SOLID)
   - Investing more time in the beginning, means less time to invest at the end
+- If possible, add unit-testing to the features or bugfixes etc. you provide
