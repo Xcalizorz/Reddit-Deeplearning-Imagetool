@@ -7,7 +7,8 @@ If there is an interesting issue you would like to work on, discuss it first and
 
 1. Ensure you have installed all the requirements and adhered our [coding guideline](#coding-guideline)
 2. Update the Changelog.md with useful information on the changes you've made
-3. Your pull request will be merged, if at least two other developers accepted it.
+3. Add a meaningful commit/pull message
+4. Your pull request will be merged, if at least two other developers accepted it.
 
 ## Coding Guideline
 
