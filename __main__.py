@@ -2,9 +2,9 @@ from RedditChecker import RedditChecker
 
 
 def main():
-    reddit = RedditChecker('memes')
+    reddit = RedditChecker('memes something funny')
 
-    reddit_data = reddit.subreddit_data
+    reddit_data = reddit.subreddit_data()
 
     print(reddit_data)
 
