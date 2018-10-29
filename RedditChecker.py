@@ -12,10 +12,12 @@ all needed information, such as:
     - etc.
 """
 from datetime import datetime
+from difflib import SequenceMatcher
 
 import requests
 
 from DBHandler import DBHandler
+from RedditDBFormatter import RedditDBFormatter
 from RedditDownloader import RedditDownloader
 
 
@@ -45,6 +47,8 @@ class RedditChecker(RedditDownloader):
 
         self.db_handler = DBHandler()
         self.sorts_with_timeconditon = ('controversial', 'top')
+        self.accepted_sorts = ('controversial', 'top', 'hot', 'new', 'rising')
+        self.accepted_times = ('hour', 'day', 'week', 'month', 'year', 'all')
 
         # TODO Implement as inheritance ?
         # self.reddit_downloader = RedditDownloader()
@@ -68,27 +72,33 @@ class RedditChecker(RedditDownloader):
                 year
                 all (all time)
         """
+        reddit_formatter = RedditDBFormatter()
         data = []
         filtered_data = []
 
         for subreddit in self.subreddits:
-            if reddit_sort in self.sorts_with_timeconditon:
-                request_query = r'https://www.reddit.com/r/{}/{}/.json?sort={}&t={}'.format(
-                    subreddit, reddit_sort, reddit_sort, reddit_time
-                )
-            else:
-                request_query = r'https://www.reddit.com/r/{}/{}/.json'.format(
-                    subreddit, reddit_sort
-                )
+            request_query = self._create_request_query(
+                subreddit, reddit_sort, reddit_time
+            )
 
             try:
+                response = self._get_response(request_query)
+                if reddit_time not in self.accepted_times or reddit_sort not in self.accepted_sorts:
+                    reddit_time = self._get_correct_spelling(reddit_time, self.accepted_times)
+                    reddit_sort = self._get_correct_spelling(reddit_sort, self.accepted_sorts)
+                    request_query = self._create_request_query(
+                        subreddit, reddit_sort, reddit_time
+                    )
+                    response = self._get_response(request_query)
+                    if not response.ok:
+                        raise KeyError
+
+                print(f'r/{subreddit}/{reddit_sort}/?t={reddit_time}')
                 data.append(
-                    requests.get(
-                        request_query, headers={'User-agent': 'Test Bot'}
-                    ).json()['data']['children']
+                    response.json()['data']['children']
                 )
             except KeyError:
-                print(f"'{subreddit}' does not exists")
+                print(f"r/{subreddit} does not exists")
                 continue
 
         for post_data in data:
@@ -99,7 +109,72 @@ class RedditChecker(RedditDownloader):
                 if child_attributes_data:
                     filtered_data.append(child_attributes_data)
 
-        return filtered_data
+        return reddit_formatter.format_data(filtered_data)
+
+    @staticmethod
+    def _get_correct_spelling(reddit_sort_info, accepted_sort_method):
+        """Correct spelling
+        Checks spelling and replaces the words
+        which have been spelled wrong with the word that is 
+        closes to it in allowed sorting or allowed timing
+
+        :param reddit_sort_info:
+            The sorting/timing method given by the user
+        :param accepted_sort_method:
+            A list of allowed keywords
+        :return:
+            They correct sort keyword
+        """
+        if reddit_sort_info in accepted_sort_method:
+            return reddit_sort_info
+
+        best_difference = 0
+        for accepted_sort in accepted_sort_method:
+            sort_difference = SequenceMatcher(a=reddit_sort_info, b=accepted_sort).ratio()
+            # premature stop
+            if sort_difference > 0.9:
+                reddit_sort_info = accepted_sort
+                break
+            if sort_difference > best_difference:
+                temp = accepted_sort
+                best_difference = sort_difference
+
+        print(f"'{temp}' is the correct spelling :)")
+        return temp
+
+    def _get_response(self, request_query):
+        """HTTP Response getter
+        Uses 'user-agent': 'Test Bot'
+        :param request_query:
+            Your request_query
+        :type request_query: str
+        :return:
+            A HTTP response using the request_query
+        """
+        return requests.get(request_query, headers={'User-agent': 'Test Bot'})
+
+    def _create_request_query(self, subreddit, reddit_sort, reddit_time):
+        """Generates a specified request query
+
+        :param subreddit: The subreddit name
+        :type subreddit: str
+        :param reddit_sort: Sorting method
+        :param reddit_time: Time sorting method
+        :return: A specified request query which can be use within requests.get()
+        :rtype: str
+        """
+
+        if reddit_sort in self.sorts_with_timeconditon:
+            request_query = r'https://www.reddit.com/r/{}/{}/.json?sort={}&t={}'.format(
+                subreddit, reddit_sort, reddit_sort, reddit_time
+            )
+            return request_query
+
+        request_query = r'https://www.reddit.com/r/{}/{}/.json'.format(
+            subreddit, reddit_sort
+        )
+        return request_query
+
 
     @staticmethod
     def _get_child_info(child_attributes, source_type='image'):
