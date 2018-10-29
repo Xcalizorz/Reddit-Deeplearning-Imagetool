@@ -25,3 +25,8 @@ Please adhere to them, because your merge request will not be accepted, if you p
   - [SOLID](https://en.wikipedia.org/wiki/SOLID)
   - Investing more time in the beginning, means less time to invest at the end
 - If possible, add unit-testing to the features or bugfixes etc. you provide
+
+## TDD
+
+Since [TDD](https://en.wikipedia.org/wiki/Test-driven_development) is more of a theoretical concept, 
+we won't adhere to it in this project. It's allowed to do so, though!
