@@ -1,6 +1,7 @@
-"""Checks specific subreddit
+# -*- coding: utf-8 -*-
+"""Checks specific subreddits
 This modules allows checking specific subreddits and their content
-It will connect to the reddit API and provide our tool with
+It will connect to the reddit .json API and provide the tool with
 all needed information, such as:
 
     - Image id
@@ -8,9 +9,10 @@ all needed information, such as:
     - Upload timestamp
     - Upload user
     - Amount of comments
-    - If removed -> the reason for removal
+    - etc.
 """
 from datetime import datetime
+
 import requests
 
 from DBHandler import DBHandler
@@ -42,6 +44,7 @@ class RedditChecker(RedditDownloader):
             self.subreddits = subreddits.split(" ")
 
         self.db_handler = DBHandler()
+        self.sorts_with_timeconditon = ('controversial', 'top')
 
         # TODO Implement as inheritance ?
         # self.reddit_downloader = RedditDownloader()
@@ -69,12 +72,19 @@ class RedditChecker(RedditDownloader):
         filtered_data = []
 
         for subreddit in self.subreddits:
+            if reddit_sort in self.sorts_with_timeconditon:
+                request_query = r'https://www.reddit.com/r/{}/{}/.json?sort={}&t={}'.format(
+                    subreddit, reddit_sort, reddit_sort, reddit_time
+                )
+            else:
+                request_query = r'https://www.reddit.com/r/{}/{}/.json'.format(
+                    subreddit, reddit_sort
+                )
+
             try:
                 data.append(
                     requests.get(
-                        r'https://www.reddit.com/r/{}/{}/.json?sort={}&t={}'.format(
-                            subreddit, reddit_sort, reddit_sort, reddit_time
-                        ), headers={'User-agent': 'Test Bot'}
+                        request_query, headers={'User-agent': 'Test Bot'}
                     ).json()['data']['children']
                 )
             except KeyError:
@@ -115,18 +125,24 @@ class RedditChecker(RedditDownloader):
             return None
 
         temp_dict = {
-            'id': child_attributes['id'],
+            'title': child_attributes['title'],
+            'post_id': child_attributes['id'],
+            'subreddit_id': child_attributes['subreddit_id'],
             'upvotes': child_attributes['ups'],
+            # FIXME downvotes not correct, .json always returns 0
+            # Seems to be a reddit.json problem
             'downvotes': child_attributes['downs'],
+            'comments': child_attributes['num_comments'],
+            'reddit_gold': child_attributes['gilded'],
             'subreddit': child_attributes['subreddit_name_prefixed'],
             'subreddit_subscribers': child_attributes['subreddit_subscribers'],
             'domain': child_attributes['domain'],
             'permalink': child_attributes['permalink'],
-            'image_url': child_attributes['url'],
+            'url': child_attributes['url'],
         }
 
         temp_dict['utc_datetime'] = datetime.utcfromtimestamp(
             child_attributes['created_utc']
-        ).strftime('%Y-%m-%d %H:%M:%S')
+        )
 
         return temp_dict
