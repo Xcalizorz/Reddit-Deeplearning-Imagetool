@@ -5,6 +5,16 @@ If there is an interesting issue you would like to work on, discuss it first and
 
 ## Pull Request Process
 
+Please contribute only to the project on [gitlab](https://gitlab.com/Xcalizorz/reddit-deeplearning-imagetool)!
+
+A branch needs to start with a prefix; preferably:
+
+- feature
+- bugfix
+- minor-change
+
+Other important steps to consider:
+
 1. Ensure you have installed all the requirements and adhered our [coding guideline](#coding-guideline)
 2. Update the Changelog.md with useful information on the changes you've made
 3. Add a meaningful commit/pull message
