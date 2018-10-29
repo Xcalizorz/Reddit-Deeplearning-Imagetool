@@ -6,3 +6,8 @@ After the learning phase is done, it knows which images (at what upload time) wi
 that subreddit.
 
 Please check our [contribution guide](CONTRIBUTING.md) for further information on how to get involved.
+
+The original project is on [gitlab](https://gitlab.com/Xcalizorz/reddit-deeplearning-imagetool),
+a mirror can be found on [github](https://github.com/Xcalizorz/Reddit-Deeplearning-Imagetool).
+
+The team works only on gitlab - issues should be submitted there.
