@@ -13,7 +13,7 @@ from sqlite3 import OperationalError
 from FileReader import FileReader
 
 
-class DBHandler():
+class DBHandler:
     """Create a connection to any given database format via '.connect'
     Usage:
 
