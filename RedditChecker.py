@@ -50,6 +50,7 @@ class RedditChecker(RedditDownloader):
         else:
             self.subreddits = subreddits.split(" ")
 
+        self.wrong_subreddit_set = set()
         self.db_handler = DBHandler(db_file_path, db_type)
         self.sorts_with_timeconditon = ('controversial', 'top')
         self.accepted_sorts = ('controversial', 'top', 'hot', 'new', 'rising')
@@ -82,6 +83,9 @@ class RedditChecker(RedditDownloader):
         filtered_data = []
 
         for subreddit in self.subreddits:
+            if subreddit in self.wrong_subreddit_set:
+                continue
+
             request_query = self._create_request_query(
                 subreddit, reddit_sort, reddit_time
             )
@@ -103,7 +107,8 @@ class RedditChecker(RedditDownloader):
                     response.json()['data']['children']
                 )
             except KeyError:
-                print(f"r/{subreddit} does not exists")
+                self.wrong_subreddit_set.add(subreddit)
+                print(f"\tr/{subreddit} does not exists")
                 continue
 
         for post_data in data:

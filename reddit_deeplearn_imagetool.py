@@ -6,15 +6,14 @@ from RedditDBHelper import *
 
 
 def reddit_deeplearn_imagetool(ARGS):
+
     reddit = RedditChecker(
         ARGS.subreddits,
         db_file_path=ARGS.database_path,
         db_type=ARGS.database_type
     )
 
-    reddit_data = reddit.subreddit_data(
-        reddit_sort=ARGS.reddit_sort, reddit_time=ARGS.reddit_time
-    )
+    reddit_data = generate_reddit_data(reddit, ARGS.reddit_sort, ARGS.reddit_time)
 
     if ARGS.create_database:
         sql_create_commands = FileReader.read_file(ARGS.database_schema)
