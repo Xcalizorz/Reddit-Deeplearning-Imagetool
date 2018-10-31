@@ -40,6 +40,7 @@ class RedditDBFormatter:
                     'upload_time': data['utc_datetime'].strftime('%Y-%m-%d %H:%M:%S'),
                 }
                 temp['images'] = images_table
+                self.seen_posts.add(data['post_id'])
 
             image_success_table = {
                 'image_id': data['post_id'],
@@ -47,6 +48,8 @@ class RedditDBFormatter:
                 'downvotes': data['downvotes'],
                 'comments': data['comments'],
                 'reddit_gold': data['reddit_gold'],
+                'reddit_sort': data['reddit_sort'],
+                'reddit_time': data['reddit_time'],
                 'last_checked': datetime.utcnow(),
                 'time_passed': str(datetime.utcnow() - data['utc_datetime']),
             }
@@ -59,7 +62,6 @@ class RedditDBFormatter:
             temp['image_processing'] = image_processing_table
 
             correct_reddit_data.append(temp)
-
             self.seen_posts.add(data['post_id'])
 
         return correct_reddit_data

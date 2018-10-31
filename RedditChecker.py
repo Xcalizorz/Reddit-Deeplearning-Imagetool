@@ -53,8 +53,23 @@ class RedditChecker(RedditDownloader):
         self.wrong_subreddit_set = set()
         self.db_handler = DBHandler(db_file_path, db_type)
         self.sorts_with_timeconditon = ('controversial', 'top')
-        self.accepted_sorts = ('controversial', 'top', 'hot', 'new', 'rising')
-        self.accepted_times = ('hour', 'day', 'week', 'month', 'year', 'all')
+
+        self.accepted_sorts = {
+            'controversial': 1,
+            'hot': 2,
+            'new': 3,
+            'rising': 4,
+            'top': 5,
+        }
+
+        self.accepted_times = {
+            'hour': 1,
+            'day': 2,
+            'week': 3,
+            'month': 4,
+            'year': 5,
+            'all': 6,
+        }
 
         # TODO Implement as inheritance ?
         # self.reddit_downloader = RedditDownloader()
@@ -92,9 +107,9 @@ class RedditChecker(RedditDownloader):
 
             try:
                 response = self._get_response(request_query)
-                if reddit_time not in self.accepted_times or reddit_sort not in self.accepted_sorts:
-                    reddit_time = self._get_correct_spelling(reddit_time, self.accepted_times)
-                    reddit_sort = self._get_correct_spelling(reddit_sort, self.accepted_sorts)
+                if reddit_time not in self.accepted_times.keys() or reddit_sort not in self.accepted_sorts.keys():
+                    reddit_time = self._get_correct_spelling(reddit_time, self.accepted_times.keys())
+                    reddit_sort = self._get_correct_spelling(reddit_sort, self.accepted_sorts.keys())
                     request_query = self._create_request_query(
                         subreddit, reddit_sort, reddit_time
                     )
@@ -114,7 +129,9 @@ class RedditChecker(RedditDownloader):
         for post_data in data:
             for child in post_data:
                 child_attributes = child['data']
-                child_attributes_data = self._get_child_info(child_attributes, 'image')
+                child_attributes_data = self._get_child_info(
+                    child_attributes, reddit_sort, reddit_time, source_type='image'
+                )
 
                 if child_attributes_data:
                     filtered_data.append(child_attributes_data)
@@ -185,13 +202,15 @@ class RedditChecker(RedditDownloader):
         )
         return request_query
 
-
-    @staticmethod
-    def _get_child_info(child_attributes, source_type='image'):
+    def _get_child_info(self, child_attributes, reddit_sort, reddit_time, source_type='image'):
         """Gets all data needed for a given source type
 
         :param child_attributes:
             The children to search through
+        :param reddit_sort:
+            The sorting method used
+        :param reddit_time:
+            The time sorting method used
         :param source_type:
             The type you want to check
                 video
@@ -218,7 +237,10 @@ class RedditChecker(RedditDownloader):
             # Seems to be a reddit.json problem
             'downvotes': child_attributes['downs'],
             'comments': child_attributes['num_comments'],
+            # TODO 'gildings' has all three types of gildings
             'reddit_gold': child_attributes['gilded'],
+            'reddit_sort': self.accepted_sorts[reddit_sort],
+            'reddit_time': self.accepted_times[reddit_time],
             'subreddit': child_attributes['subreddit_name_prefixed'],
             'subreddit_subscribers': child_attributes['subreddit_subscribers'],
             'domain': child_attributes['domain'],
