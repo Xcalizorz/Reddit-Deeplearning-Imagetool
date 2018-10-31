@@ -1,4 +1,4 @@
-# Reddit-Deeplearning-Memetool
+# Reddit-Deeplearning-Imagetool
 
 This projects aims to provide a tool, which downloads and analyzes images uploaded to a subreddit.
 
