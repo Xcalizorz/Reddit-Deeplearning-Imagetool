@@ -70,3 +70,33 @@ information.
 ```bash
 >>> python reddit_deeplearn_imagetool.py "pic earthporn spaceporn" -rs "rising" -rt "week" -c_db True -db_path "./my_databases/images.db" -db_schema "./my_databases/schemas/images_schema.sql"
 ```
+
+Different sort types - all permutations will be tested:
+
+```bash
+>>> python reddit_deeplearn_imagetool.py "pic earthporn spaceporn" -rs "top controversial" -rt "hour week month" -c_db True
+
+r/pic/top/?t=hour
+r/earthporn/top/?t=hour
+r/spaceporn/top/?t=hour
+
+r/pic/top/?t=week
+r/earthporn/top/?t=week
+r/spaceporn/top/?t=week
+
+r/pic/top/?t=month
+r/earthporn/top/?t=month
+r/spaceporn/top/?t=month
+
+r/pic/controversial/?t=hour
+r/earthporn/controversial/?t=hour
+r/spaceporn/controversial/?t=hour
+
+r/pic/controversial/?t=week
+r/earthporn/controversial/?t=week
+r/spaceporn/controversial/?t=week
+
+r/pic/controversial/?t=month
+r/earthporn/controversial/?t=month
+r/spaceporn/controversial/?t=month
+```
