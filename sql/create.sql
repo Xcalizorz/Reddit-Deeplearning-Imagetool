@@ -1,8 +1,7 @@
 CREATE TABLE subreddits (
 	id VARCHAR(20) PRIMARY KEY NOT NULL,
 	subreddit VARCHAR(50),
-    subscriber_number BIGINT,
-    images_tested INT
+    subscriber_number BIGINT
 );
 
 CREATE index subreddit_id on subreddits(id);

@@ -26,7 +26,6 @@ class RedditDBFormatter:
                     'id': data['subreddit_id'],
                     'subreddit': data['subreddit'],
                     'subscriber_number': data['subreddit_subscribers'],
-                    'images_tested': 0,
                 }
 
                 temp['subreddits'] = subreddit_table
