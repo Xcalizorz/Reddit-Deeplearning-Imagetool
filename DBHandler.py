@@ -98,15 +98,15 @@ class DBHandler:
 
         :param table_name:
             Name of your SQL Table
-        :param data_to_insert: 
+        :param data_to_insert:
             All data to insert
         :type data_to_insert:
             Dict
         :raises OperationalError:
             If insertion was not possible
         """
-        if any(self.job_check.values()) is False and not os.path.isfile(self.db_file_path):
-            print(f"Please initialize and create your database first!")
+        if not any(self.job_check.values()):
+            print("Init. and create your db before inserting!")
             sys.exit()
 
         data_types = ""
@@ -133,4 +133,5 @@ class DBHandler:
             except OperationalError:
                 print(f"Could not insert to {table_name}: {data_types} - {list(data_to_insert.values())}")
             except sqlite3.IntegrityError as ie:
-                print(f"{ie} in table {table_name} at {data_types} - {list(data_to_insert.values())}")
+                pass
+                # print(f"{ie} in table {table_name} at {data_types} - {list(data_to_insert.values())}")

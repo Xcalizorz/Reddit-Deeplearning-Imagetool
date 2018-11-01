@@ -23,4 +23,7 @@ def reddit_deeplearn_imagetool(ARGS):
     insert_reddit_data_to_db(reddit.db_handler, reddit_data)
 
 if __name__ == '__main__':
-    reddit_deeplearn_imagetool(arg_parse_info())
+    try:
+        reddit_deeplearn_imagetool(arg_parse_info())
+    except SystemExit:
+        print("Program exit.")

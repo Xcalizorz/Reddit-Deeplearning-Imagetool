@@ -16,8 +16,6 @@ class RedditDBFormatter:
         :param reddit_data: General data from RedditChecker
         :return: Data in a format to be used in DBHandler.insert_to_database
         """
-
-        correct_reddit_data = []
         for data in reddit_data:
             temp = {}
 
@@ -45,7 +43,6 @@ class RedditDBFormatter:
             image_success_table = {
                 'image_id': data['post_id'],
                 'upvotes': data['upvotes'],
-                'downvotes': data['downvotes'],
                 'comments': data['comments'],
                 'reddit_gold': data['reddit_gold'],
                 'reddit_sort': data['reddit_sort'],
@@ -61,7 +58,5 @@ class RedditDBFormatter:
             }
             temp['image_processing'] = image_processing_table
 
-            correct_reddit_data.append(temp)
             self.seen_posts.add(data['post_id'])
-
-        return correct_reddit_data
+            yield temp
