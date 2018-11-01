@@ -53,6 +53,7 @@ class RedditChecker(RedditDownloader):
         self.wrong_subreddit_set = set()
         self.db_handler = DBHandler(db_file_path, db_type)
         self.sorts_with_timeconditon = ('controversial', 'top')
+        self.seen_spelling_mistakes = {}
 
         self.accepted_sorts = {
             'controversial': 1,
@@ -94,8 +95,39 @@ class RedditChecker(RedditDownloader):
                 all (all time)
         """
         reddit_formatter = RedditDBFormatter()
-        data = []
-        filtered_data = []
+
+        json_data_with_sort = self._generate_reddit_json(reddit_sort, reddit_time)
+        filtered_data = self._generate_filtered_data_from_json(json_data_with_sort)
+
+        return reddit_formatter.format_data(filtered_data)
+
+    def _generate_filtered_data_from_json(self, json_data):
+        """Filters the json output for our needs
+
+        :param json_data:
+            Json output from _generate_reddit_json
+        """
+        for post_data, reddit_sort, reddit_time in json_data:
+            for child in post_data:
+                child_attributes = child['data']
+                child_attributes_data = self._get_child_info(
+                    child_attributes, reddit_sort, reddit_time, source_type='image'
+                )
+
+                if child_attributes_data:
+                    yield child_attributes_data
+
+    def _generate_reddit_json(self, reddit_sort, reddit_time):
+        """A generator for the reddit_json api
+        Yields the json output of reddit
+
+        :param reddit_sort:
+            Sorting mechanism
+        :param reddit_time:
+            The time sorting mechanism
+        :raises KeyError:
+            If subreddit does not exist
+        """
 
         for subreddit in self.subreddits:
             if subreddit in self.wrong_subreddit_set:
@@ -118,31 +150,16 @@ class RedditChecker(RedditDownloader):
                         raise KeyError
 
                 print(f'r/{subreddit}/{reddit_sort}/?t={reddit_time}')
-                data.append(
-                    response.json()['data']['children']
-                )
+                yield response.json()['data']['children'], reddit_sort, reddit_time
             except KeyError:
                 self.wrong_subreddit_set.add(subreddit)
                 print(f"\tr/{subreddit} does not exists")
                 continue
 
-        for post_data in data:
-            for child in post_data:
-                child_attributes = child['data']
-                child_attributes_data = self._get_child_info(
-                    child_attributes, reddit_sort, reddit_time, source_type='image'
-                )
-
-                if child_attributes_data:
-                    filtered_data.append(child_attributes_data)
-
-        return reddit_formatter.format_data(filtered_data)
-
-    @staticmethod
-    def _get_correct_spelling(reddit_sort_info, accepted_sort_method):
+    def _get_correct_spelling(self, reddit_sort_info, accepted_sort_method):
         """Correct spelling
         Checks spelling and replaces the words
-        which have been spelled wrong with the word that is 
+        which have been spelled wrong with the word that is
         closes to it in allowed sorting or allowed timing
 
         :param reddit_sort_info:
@@ -154,19 +171,24 @@ class RedditChecker(RedditDownloader):
         """
         if reddit_sort_info in accepted_sort_method:
             return reddit_sort_info
+        if reddit_sort_info in self.seen_spelling_mistakes:
+            return self.seen_spelling_mistakes[reddit_sort_info]
 
         best_difference = 0
+        self.seen_spelling_mistakes[reddit_sort_info] = None
+
         for accepted_sort in accepted_sort_method:
             sort_difference = SequenceMatcher(a=reddit_sort_info, b=accepted_sort).ratio()
             # premature stop
             if sort_difference > 0.9:
-                reddit_sort_info = accepted_sort
+                temp = accepted_sort
                 break
             if sort_difference > best_difference:
                 temp = accepted_sort
                 best_difference = sort_difference
 
         print(f"'{temp}' is the correct spelling :)")
+        self.seen_spelling_mistakes[reddit_sort_info] = temp
         return temp
 
     def _get_response(self, request_query):
@@ -233,9 +255,6 @@ class RedditChecker(RedditDownloader):
             'post_id': child_attributes['id'],
             'subreddit_id': child_attributes['subreddit_id'],
             'upvotes': child_attributes['ups'],
-            # FIXME downvotes not correct, .json always returns 0
-            # Seems to be a reddit.json problem
-            'downvotes': child_attributes['downs'],
             'comments': child_attributes['num_comments'],
             # TODO 'gildings' has all three types of gildings
             'reddit_gold': child_attributes['gilded'],

@@ -36,7 +36,6 @@ CREATE TABLE image_success (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     image_id INT NOT NULL,
     upvotes INT,
-    downvotes INT,
     comments INT,
     reddit_gold INT,
     reddit_sort varchar(10),

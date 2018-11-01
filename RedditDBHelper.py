@@ -14,18 +14,12 @@ def generate_reddit_data(reddit, reddit_sorts, reddit_times):
     :param reddit_times: The time arguments given by the user
     :type reddit_times: str
     """
-    reddit_data = []
     reddit_sorts = reddit_sorts.split(" ")
     reddit_times = reddit_times.split(" ")
 
     for reddit_sort in reddit_sorts:
         for reddit_time in reddit_times:
-            reddit_data.append(
-                reddit.subreddit_data(reddit_sort=reddit_sort, reddit_time=reddit_time)
-            )
-            print()
-
-    return reddit_data
+            yield reddit.subreddit_data(reddit_sort=reddit_sort, reddit_time=reddit_time)
 
 
 def insert_reddit_data_to_db(reddit_db_handler, data):
