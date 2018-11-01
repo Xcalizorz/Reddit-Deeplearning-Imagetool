@@ -12,6 +12,7 @@ A branch needs to start with a prefix; preferably:
 - feature
 - bugfix
 - minor-change
+- speed
 
 Other important steps to consider:
 
@@ -38,5 +39,5 @@ Please adhere to them, because your merge request will not be accepted, if you p
 
 ## TDD
 
-Since [TDD](https://en.wikipedia.org/wiki/Test-driven_development) is more of a theoretical concept, 
+Since [TDD](https://en.wikipedia.org/wiki/Test-driven_development) is more of a theoretical concept,
 we won't adhere to it in this project. It's allowed to do so, though!
