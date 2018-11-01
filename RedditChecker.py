@@ -250,14 +250,16 @@ class RedditChecker(RedditDownloader):
         if not child_attributes['post_hint'] == source_type:
             return None
 
+        reddit_awards = child_attributes['gildings']
         temp_dict = {
             'title': child_attributes['title'],
             'post_id': child_attributes['id'],
             'subreddit_id': child_attributes['subreddit_id'],
             'upvotes': child_attributes['ups'],
             'comments': child_attributes['num_comments'],
-            # TODO 'gildings' has all three types of gildings
-            'reddit_gold': child_attributes['gilded'],
+            'reddit_silver': reddit_awards['gid_1'],
+            'reddit_gold': reddit_awards['gid_2'],
+            'reddit_platinum': reddit_awards['gid_3'],
             'reddit_sort': self.accepted_sorts[reddit_sort],
             'reddit_time': self.accepted_times[reddit_time],
             'subreddit': child_attributes['subreddit_name_prefixed'],
