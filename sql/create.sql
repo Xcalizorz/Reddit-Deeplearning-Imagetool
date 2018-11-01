@@ -1,7 +1,7 @@
 CREATE TABLE subreddits (
 	id VARCHAR(20) PRIMARY KEY NOT NULL,
 	subreddit VARCHAR(50),
-    subscriber_number BIGINT
+    subscriber_number INT
 );
 
 CREATE index subreddit_id on subreddits(id);
@@ -34,10 +34,12 @@ CREATE index t_sort on reddit_time(sort);
 
 CREATE TABLE image_success (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    image_id INT NOT NULL,
+    image_id varchar(20) NOT NULL,
     upvotes INT,
     comments INT,
-    reddit_gold INT,
+    reddit_silver TINYINT,
+    reddit_gold TINYINT,
+    reddit_platinum TINYINT,
     reddit_sort varchar(10),
     reddit_time varchar(10),
     last_checked DATETIME,
@@ -51,8 +53,8 @@ CREATE index time_passed on image_success(time_passed);
 
 CREATE TABLE image_processing (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
+    image_id varchar(20) NOT NULL,
     process_result TEXT,
-    image_id INT NOT NULL,
 
     FOREIGN KEY(image_id) REFERENCES images(id)
 );
