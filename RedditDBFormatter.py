@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from datetime import datetime
 
+from RedditDBHelper import google_reverse_image_search
+
 
 class RedditDBFormatter:
     """Allows formatting of RedditChecker Output
@@ -38,6 +40,16 @@ class RedditDBFormatter:
                     'upload_time': data['utc_datetime'].strftime('%Y-%m-%d %H:%M:%S'),
                 }
                 temp['images'] = images_table
+
+                google_process = google_reverse_image_search(images_table['image_url'])
+                image_processing_table = {
+                    'image_id': data['post_id'],
+                    'guess': google_process['guess'],
+                    'google_permalink': google_process['google_permalink'],
+                    'first_result': google_process['first_result'],
+                }
+                temp['image_processing'] = image_processing_table
+
                 self.seen_posts.add(data['post_id'])
 
             image_success_table = {
@@ -54,11 +66,7 @@ class RedditDBFormatter:
             }
             temp['image_success'] = image_success_table
 
-            image_processing_table = {
-                'image_id': data['post_id'],
-                'process_result': "",
-            }
-            temp['image_processing'] = image_processing_table
+
 
             self.seen_posts.add(data['post_id'])
             yield temp

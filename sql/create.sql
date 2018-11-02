@@ -54,12 +54,12 @@ CREATE index time_passed on image_success(time_passed);
 CREATE TABLE image_processing (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     image_id varchar(20) NOT NULL,
-    process_result TEXT,
+    google_permalink TEXT,
+    guess varchar(50),
+    first_result TEXT,
 
     FOREIGN KEY(image_id) REFERENCES images(id)
 );
-
-CREATE index process_result on image_processing(process_result);
 
 
 INSERT INTO reddit_sort(sort)

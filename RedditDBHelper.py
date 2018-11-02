@@ -2,6 +2,9 @@
 """Helper functions to interact with our specific DB
 
 """
+import re
+
+import requests
 
 
 def generate_reddit_data(reddit, reddit_sorts, reddit_times):
@@ -34,3 +37,44 @@ def insert_reddit_data_to_db(reddit_db_handler, data):
         for post in reddit_data:
             for table_name, post_data in post.items():
                 reddit_db_handler.insert_to_db(table_name, post_data)
+
+
+# Seperate in the future
+USER_AGENT = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
+    'Content-Type': 'application/json',
+}
+
+
+def google_reverse_image_search(image_url):
+    """Uses googles reverse image search
+    Returns main information as a dictionary
+
+    :param image_url:
+        A URL to the image to be analyzed
+    :return: 
+        - Google Permalink to the search
+        - Guess whats on the picture
+        - Link of first result
+    :rtype: Dict
+    """
+
+    google_url = f'https://images.google.com/searchbyimage?image_url={image_url}'
+    response = requests.get(google_url, headers=USER_AGENT)
+
+    result = {}
+    try:
+        information = re.search(r'<a class="fKDtNb" href="(.*?)</a>',
+                                response.text).group(1).split('style="font-style:italic">')
+        result['google_permalink'] = information[0]
+        result['guess'] = information[1].title()
+    except AttributeError:
+        result['google_permalink'] = None
+        result['guess'] = None
+
+    try:
+        result['first_result'] = re.search(r'<div class="r"><a href="(.*?)"', response.text).group(1)
+    except AttributeError:
+        result['first_result'] = None
+
+    return result
