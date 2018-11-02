@@ -53,7 +53,8 @@ CREATE index time_passed on image_success(time_passed);
 
 CREATE TABLE image_processing (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    image_id varchar(20) NOT NULL,
+    image_id varchar(20) NOT NULL UNIQUE,
+    title varchar(50),
     google_permalink TEXT,
     guess varchar(50),
     first_result TEXT,
@@ -61,6 +62,7 @@ CREATE TABLE image_processing (
     FOREIGN KEY(image_id) REFERENCES images(id)
 );
 
+CREATE index guess ON image_processing(guess);
 
 INSERT INTO reddit_sort(sort)
 VALUES ('controversial'), ('hot'), ('new'), ('rising'), ('top');

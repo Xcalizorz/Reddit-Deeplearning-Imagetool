@@ -44,6 +44,7 @@ class RedditDBFormatter:
                 google_process = google_reverse_image_search(images_table['image_url'])
                 image_processing_table = {
                     'image_id': data['post_id'],
+                    'title': data['title'],
                     'guess': google_process['guess'],
                     'google_permalink': google_process['google_permalink'],
                     'first_result': google_process['first_result'],

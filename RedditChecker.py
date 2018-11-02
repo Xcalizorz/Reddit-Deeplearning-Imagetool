@@ -252,7 +252,7 @@ class RedditChecker(RedditDownloader):
 
         reddit_awards = child_attributes['gildings']
         temp_dict = {
-            'title': child_attributes['title'],
+            'title': child_attributes['title'].title(),
             'post_id': child_attributes['id'],
             'subreddit_id': child_attributes['subreddit_id'],
             'upvotes': child_attributes['ups'],

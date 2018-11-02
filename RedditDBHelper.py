@@ -44,6 +44,7 @@ USER_AGENT = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
     'Content-Type': 'application/json',
 }
+google_knows = False
 
 
 def google_reverse_image_search(image_url):
@@ -62,19 +63,29 @@ def google_reverse_image_search(image_url):
     google_url = f'https://images.google.com/searchbyimage?image_url={image_url}'
     response = requests.get(google_url, headers=USER_AGENT)
 
-    result = {}
+    result = {
+        'google_permalink': None,
+        'guess': None,
+        'first_result': None,
+    }
+
+    if response.status_code == 503:
+        if not google_knows:
+            print("Google found out you're a bot!")
+            google_knows = True
+        return result
+
     try:
         information = re.search(r'<a class="fKDtNb" href="(.*?)</a>',
                                 response.text).group(1).split('style="font-style:italic">')
         result['google_permalink'] = information[0]
         result['guess'] = information[1].title()
     except AttributeError:
-        result['google_permalink'] = None
-        result['guess'] = None
+        pass
 
     try:
         result['first_result'] = re.search(r'<div class="r"><a href="(.*?)"', response.text).group(1)
     except AttributeError:
-        result['first_result'] = None
+        pass
 
     return result
