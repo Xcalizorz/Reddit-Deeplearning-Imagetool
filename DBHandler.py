@@ -105,7 +105,7 @@ class DBHandler:
         :raises OperationalError:
             If insertion was not possible
         """
-        if not any(self.job_check.values()):
+        if not any(self.job_check.values()) and not os.path.isfile(self.db_file_path):
             print("Init. and create your db before inserting!")
             sys.exit()
 

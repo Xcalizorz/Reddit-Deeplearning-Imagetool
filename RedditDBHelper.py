@@ -44,7 +44,6 @@ USER_AGENT = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36',
     'Content-Type': 'application/json',
 }
-google_knows = False
 
 
 def google_reverse_image_search(image_url):
@@ -59,7 +58,7 @@ def google_reverse_image_search(image_url):
         - Link of first result
     :rtype: Dict
     """
-
+    google_knows = False
     google_url = f'https://images.google.com/searchbyimage?image_url={image_url}'
     response = requests.get(google_url, headers=USER_AGENT)
 
@@ -71,7 +70,8 @@ def google_reverse_image_search(image_url):
 
     if response.status_code == 503:
         if not google_knows:
-            print("Google found out you're a bot!")
+            print("Google found out you're a bot!\nAuthorize here:\t")
+            print(response.url)
             google_knows = True
         return result
 
