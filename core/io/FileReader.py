@@ -13,7 +13,7 @@ class FileReader(ABC):
 
     @staticmethod
     @abstractmethod
-    def read_file(path_to_file, mode: str = 'r'):
+    def read_file(path_to_file, mode='r'):
         """
         Reads a file and returns its content as a string
         :param path_to_file:
