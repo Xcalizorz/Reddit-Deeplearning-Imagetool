@@ -1,19 +1,19 @@
 CREATE TABLE subreddits (
 	id VARCHAR(20) PRIMARY KEY NOT NULL,
-	subreddit VARCHAR(50),
-    subscriber_number INT
+	subreddit_name_prefixed VARCHAR(50),
+  subreddit_subscribers INT
 );
 
 CREATE index subreddit_id on subreddits(id);
-CREATE index subreddit on subreddits(subreddit);
+CREATE index subreddit_name_prefixed on subreddits(subreddit_name_prefixed);
 
 CREATE TABLE images (
 	id VARCHAR(20) PRIMARY KEY NOT NULL,
-    subreddit_id INT NOT NULL,
+  subreddit_id INT NOT NULL,
 	image_url TEXT,
-    permalink TEXT,
-    upload_time DATETIME,
-    FOREIGN KEY(subreddit_id) REFERENCES subreddits(id)
+  permalink TEXT,
+  upload_time DATETIME,
+  FOREIGN KEY(subreddit_id) REFERENCES subreddits(id)
 );
 
 CREATE index image_id on images(id);
@@ -35,11 +35,11 @@ CREATE index t_sort on reddit_time(sort);
 CREATE TABLE image_success (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     image_id varchar(20) NOT NULL,
-    upvotes INT,
-    comments INT,
-    reddit_silver TINYINT,
-    reddit_gold TINYINT,
-    reddit_platinum TINYINT,
+    ups INT,
+    num_comments INT,
+    gid_1 TINYINT,
+    gid_2 TINYINT,
+    gid_3 TINYINT,
     reddit_sort varchar(10),
     reddit_time varchar(10),
     last_checked DATETIME,

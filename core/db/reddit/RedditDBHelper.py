@@ -3,7 +3,6 @@
 
 """
 import re
-
 import requests
 
 
@@ -45,14 +44,14 @@ USER_AGENT = {
     'Content-Type': 'application/json',
 }
 
-
+# FIXME Depricated, googlecraweler has that!!!!
 def google_reverse_image_search(image_url):
     """Uses googles reverse image search
     Returns main information as a dictionary
 
     :param image_url:
         A URL to the image to be analyzed
-    :return: 
+    :return:
         - Google Permalink to the search
         - Guess whats on the picture
         - Link of first result
@@ -60,6 +59,7 @@ def google_reverse_image_search(image_url):
     """
     google_knows = False
     google_url = f'https://images.google.com/searchbyimage?image_url={image_url}'
+    print("Requesting Google Reverse Image Search: " + google_url)
     response = requests.get(google_url, headers=USER_AGENT)
 
     result = {
